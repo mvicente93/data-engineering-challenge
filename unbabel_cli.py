@@ -9,7 +9,7 @@ from unbabel_cli.writers import JsonWriter
 from unbabel_cli.writers import StdoutWriter
 
 
-EXTENSIONS = {
+READERS = {
     '.json': JsonReader,
     '.csv': CsvReader
 }
@@ -27,6 +27,7 @@ WRITERS = {
     'stdout': StdoutWriter
 }
 
+EVENT_OPTIONS = ['translation_delivered', 'translation_requested']
 
 def run(input_filename, output_format, window_size, type, event_name, 
         source_language=None, target_language=None):
@@ -43,7 +44,7 @@ def read_input(filename):
 
 def get_filereader(filename):
     _, extension = os.path.splitext(filename)
-    return EXTENSIONS.get(extension, None)
+    return READERS.get(extension, None)
 
 def transform_input(input, ma_type, event_name, source_language=None, target_language=None):
     data_transformer = TRANSFORMERS.get(ma_type, None)
@@ -55,10 +56,10 @@ def get_transformation_parameters(event_name, source_language, target_language):
     params = {'columns': ['event_name'], 'filters': [event_name]}
     if source_language:
         params['columns'].append('source_language')
-        params['filters'].append('source_language')
+        params['filters'].append(source_language)
     if target_language:
         params['columns'].append('target_language')
-        params['filters'].append('target_language')
+        params['filters'].append(target_language)
     return params
 
 def get_iterator(input, window_size, ma_type):
@@ -74,20 +75,23 @@ def write_output(iterator, output):
 def generate_cli_parser():
     parser = argparse.ArgumentParser(description='Unbabel CLI')
     parser.add_argument('--input_file', '-f',
-                        help='Path to file to process',
+                        help='Path to file to process - json and csv files are supported',
                         required=True)
     parser.add_argument('--output_format', '-o',
-                        help="Output format (defaults to JSON)",
-                        default="json",)
+                        help="Output format (defaults to json)",
+                        default="json",
+                        choices=WRITERS.keys())
     parser.add_argument('--window_size', '-w',
                         help='Window size for moving average in minutes (defaults to 10)',
                         default=10)
     parser.add_argument('--type', '-t',
-                        help='Moving Average algorithm to use (defaults to Simple Moving Average)',
-                        default='sma')
+                        help="Moving Average algorithm to use (defaults to 'sma')",
+                        default='sma',
+                        choices=ITERATORS.keys())
     parser.add_argument('--event_name', '-e',
                         help="Which event to process (defaults to 'translation_delivered')",
-                        default='translation_delivered')
+                        default='translation_delivered',
+                        choices=EVENT_OPTIONS)
     parser.add_argument('--source_language',
                         help='Process only translations from given language')
     parser.add_argument('--target_language',
