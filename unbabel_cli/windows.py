@@ -31,5 +31,5 @@ class SMAWindow(AbstractWindow):
         return self.window.index[-1] + timedelta(minutes=1)
 
     def get_mean(self):
-        print(self.window)
-        return self.window.duration.duration_sum.sum() / self.window.duration.events_count.sum()
+        counts = self.window.duration.events_count.sum()
+        return self.window.duration.duration_sum.sum() / counts if counts else 0
