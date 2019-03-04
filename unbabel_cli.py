@@ -82,7 +82,8 @@ def generate_cli_parser():
                         choices=WRITERS.keys())
     parser.add_argument('--window_size', '-w',
                         help='Window size for moving average in minutes (defaults to 10)',
-                        default=10)
+                        default=10,
+                        type=int)
     parser.add_argument('--type', '-t',
                         help="Moving Average algorithm to use (defaults to 'sma')",
                         default='sma',
@@ -101,7 +102,7 @@ def generate_cli_parser():
 if __name__ == "__main__":
     cli_parser = generate_cli_parser()
     cli_args = cli_parser.parse_args(sys.argv[1:])
-    run(cli_args.input_file,
+    run(cli_args.file,
         cli_args.output_format,
         cli_args.window_size, 
         cli_args.type,
