@@ -12,7 +12,10 @@ class FileReader(ABC):
 
 class JsonReader(FileReader):
     def read(self, input_file):
-        return pd.read_json(input_file, lines=True)
+        try:
+            return pd.read_json(input_file)
+        except ValueError:
+            return pd.read_json(input_file, lines=True)
 
 
 class CsvReader(FileReader):
