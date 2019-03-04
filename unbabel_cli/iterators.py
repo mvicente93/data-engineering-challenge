@@ -12,7 +12,6 @@ class AbstractWindowIterator(ABC):
         self.data = data
         self.window_size = window_size
         self.window = None
-        super().__init__()
 
     def next(self):    
         while True:

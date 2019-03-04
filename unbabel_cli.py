@@ -73,7 +73,7 @@ def write_output(iterator, output):
     
 def generate_cli_parser():
     parser = argparse.ArgumentParser(description='Unbabel CLI')
-    parser.add_argument('--input_file', '-f',
+    parser.add_argument('--file', '-f',
                         help='Path to file to process - json and csv files are supported',
                         required=True)
     parser.add_argument('--output_format', '-o',
