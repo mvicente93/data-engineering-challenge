@@ -53,13 +53,12 @@ def transform_input(input, ma_type, event_name, source_language=None, target_lan
         return data_transformer(input).transform(params)
 
 def get_transformation_parameters(event_name, source_language, target_language):
-    params = {'columns': ['event_name'], 'filters': [event_name]}
+    params = [('event_name', event_name)]
     if source_language:
-        params['columns'].append('source_language')
-        params['filters'].append(source_language)
+        params.append(('source_language', source_language))
     if target_language:
-        params['columns'].append('target_language')
-        params['filters'].append(target_language)
+        params.append(('target_language', target_language))
+
     return params
 
 def get_iterator(input, window_size, ma_type):

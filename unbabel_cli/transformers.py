@@ -6,20 +6,16 @@ class SMADataTransformer:
     def __init__(self, df):
         self.df = df
 
-    def transform(self, params={}):
+    def transform(self, params=[]):
         
-        columns = params.get('columns', [])
-        filters = params.get('filters', [])
+        self.df = self._filter(params)
 
-        if columns and filters and len(columns) == len(filters):
-            self.df = self._filter(columns, filters)
-        
         return self._aggregate()
 
-    def _filter(self, columns, filters):
+    def _filter(self, filters):
     
         boolean_filter = pd.Series([True] * len(self.df))
-        for column, value in zip(columns, filters):
+        for column, value in filters:
             boolean_filter &= (self.df[column] == value)
         
         return self.df[ boolean_filter ]
