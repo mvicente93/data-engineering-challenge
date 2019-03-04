@@ -10,12 +10,9 @@ class AbstractWriter(ABC):
 
 class JsonWriter(AbstractWriter):
     def write(self, iterator, output='output.json'):
-        f = open(output, 'w')
-        entry_list = []
-        for entry in iterator.next():
-            entry_list.append(json.dumps(entry.__dict__()) + '\n')
-        f.writelines(entry_list)
-        f.close()
+        with open(output, 'w') as f:
+            for entry in iterator.next():
+                f.write(json.dumps(entry.__dict__()) + '\n')
 
 class StdoutWriter(AbstractWriter):
     def write(self, iterator):
