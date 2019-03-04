@@ -6,7 +6,7 @@ class SMADataTransformer:
     def __init__(self, df):
         self.df = df
 
-    def transform(self, params):
+    def transform(self, params={}):
         
         columns = params.get('columns', [])
         filters = params.get('filters', [])
