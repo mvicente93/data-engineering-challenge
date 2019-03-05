@@ -11,7 +11,7 @@ For the initial setup, please consider the following instructions
 ```shell
 git clone https://github.com/mvicente93/data-engineering-challenge.git
 cd data-engineering-challenge
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 python setup.py
