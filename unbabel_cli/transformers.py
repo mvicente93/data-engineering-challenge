@@ -1,7 +1,7 @@
 import pandas as pd 
 
 
-class SMADataTransformer:
+class DataTransformer:
 
     def __init__(self, df):
         self.df = df

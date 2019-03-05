@@ -1,6 +1,6 @@
 from unittest import TestCase
 from unbabel_cli.readers import JsonReader
-from unbabel_cli.transformers import SMADataTransformer
+from unbabel_cli.transformers import DataTransformer
 from unbabel_cli.iterators import AbstractWindowIterator
 from unbabel_cli.iterators import SMAWindowIterator
 from unbabel_cli.windows import SMAWindow
@@ -15,7 +15,7 @@ class TestSMAIterator(TestCase):
     
     def setUp(self):
         self.sample_input = JsonReader().read(INPUT_FILE_PATH)
-        self.iterator = SMAWindowIterator(SMADataTransformer(self.sample_input).transform(), 2)
+        self.iterator = SMAWindowIterator(DataTransformer(self.sample_input).transform(), 2)
 
     def test_index_update_under_window_size(self):
         iterator = SMAWindowIterator("", 2)

@@ -3,8 +3,9 @@ import sys
 import argparse
 from unbabel_cli.readers import JsonReader
 from unbabel_cli.readers import CsvReader
-from unbabel_cli.transformers import SMADataTransformer
+from unbabel_cli.transformers import DataTransformer
 from unbabel_cli.iterators import SMAWindowIterator
+from unbabel_cli.iterators import EMAWindowIterator
 from unbabel_cli.writers import JsonWriter
 from unbabel_cli.writers import StdoutWriter
 
@@ -15,11 +16,13 @@ READERS = {
 }
 
 TRANSFORMERS = {
-    'sma': SMADataTransformer
+    'sma': DataTransformer,
+    'ema': DataTransformer
 }
 
 ITERATORS = {
-    'sma': SMAWindowIterator
+    'sma': SMAWindowIterator,
+    'ema': EMAWindowIterator
 }
 
 WRITERS = {

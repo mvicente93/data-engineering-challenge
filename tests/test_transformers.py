@@ -1,6 +1,6 @@
 from unittest import TestCase
 from unbabel_cli.readers import JsonReader
-from unbabel_cli.transformers import SMADataTransformer
+from unbabel_cli.transformers import DataTransformer
 import json
 import os
 
@@ -19,7 +19,7 @@ class TestSMATransformer(TestCase):
         EXPECTED_DURATION = 105
         EXPECTED_COUNTS = 3
 
-        prepared_data = SMADataTransformer(self.sample_input).transform()
+        prepared_data = DataTransformer(self.sample_input).transform()
         self.assertEqual(len(prepared_data), EXPECTED_LEN)
         self.assertEqual(list(prepared_data), EXPECTED_HEADERS)
         self.assertEqual(prepared_data.duration.duration_sum.sum(), EXPECTED_DURATION)
@@ -31,7 +31,7 @@ class TestSMATransformer(TestCase):
         EXPECTED_DURATION = 85
         EXPECTED_COUNTS = 2
 
-        prepared_data = SMADataTransformer(self.sample_input).transform([('event_name', 'translation_delivered')])
+        prepared_data = DataTransformer(self.sample_input).transform([('event_name', 'translation_delivered')])
         self.assertEqual(len(prepared_data), EXPECTED_LEN)
         self.assertEqual(list(prepared_data), EXPECTED_HEADERS)
         self.assertEqual(prepared_data.duration.duration_sum.sum(), EXPECTED_DURATION)

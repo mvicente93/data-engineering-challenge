@@ -1,90 +1,72 @@
 # Data Engineering Challenge
 
+This repo contains a possible solution to [Unbabel's Data Engineering Challenge](https://github.com/Unbabel/data-engineering-challenge)
 
-Welcome to our Data Engineering Challenge repository 🖖
+## Setup
 
-If you found this repository it probably means that you are participating in our recruitment process. Thank you for your time and energy. If that's not the case please take a look at our [opening](https://jobs.lever.co/unbabel/2e537b5d-5e6c-40f2-a357-819815e8543f) and apply!
+This project was developed and should be run in Python 3.5.2.
+For the initial setup, please consider the following instructions
 
-Please fork this repo before you start working on the challenge, read it careful and take your time and think about the solution. Also, please for this repository because we will evaluate the code on the fork.
-
-This is an opportunity for us both to work together and get to know each other in a more technical way. If have some doubt please open and issue and we'll reach out to help.
-
-Good luck!
-
-## Challenge Scenario
-
-At Unbabel we deal we a lot of translation data. One of the metrics we use for our clients' SLAs is the delivery time of a translation. 
-
-In the context of this problem, and to keep things simple, our translation flow is going to be modeled as only one event.
-
-### *translation_delivered*
-
-Example:
-
-```json
-{
-	"timestamp": "2018-12-26 18:12:19.903159",
-	"translation_id": "5aa5b2f39f7254a75aa4",
-	"source_language": "en",
-	"target_language": "fr",
-	"client_name": "easyjet",
-	"event_name": "translation_delivered",
-	"duration": 20,
-	"nr_words": 100
-}
+```shell
+git clone https://github.com/mvicente93/data-engineering-challenge.git
+cd data-engineering-challenge
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python setup.py
 ```
 
-## Challenge Objective
-
-Your mission is to build a simple command line application that parses a stream of events and produces an aggregated output. In this case, we're instered in calculating, for every minute, a moving average of the translation delivery time for the last X minutes.
-
-If we want to count, for each minute, the moving average delivery time of all translations for the past 10 minutes we would call your application like (feel free to name it anything you like!).
-
-	unbabel_cli --input_file events.json --window_size 10
-	
-The input file format would be something like:
-
-	{"timestamp": "2018-12-26 18:11:08.509654","translation_id": "5aa5b2f39f7254a75aa5","source_language": "en","target_language": "fr","client_name": "easyjet","event_name": "translation_requested","nr_words": 30, "duration": 20}
-	{"timestamp": "2018-12-26 18:15:19.903159","translation_id": "5aa5b2f39f7254a75aa4","source_language": "en","target_language": "fr","client_name": "easyjet","event_name": "translation_delivered","nr_words": 30, "duration": 31}
-	{"timestamp": "2018-12-26 18:23:19.903159","translation_id": "5aa5b2f39f7254a75bb33","source_language": "en","target_language": "fr","client_name": "booking","event_name": "translation_delivered","nr_words": 100, "duration": 54}
-
-
-The output file would be something in the following format.
-
+This will clone the code from this repo, create a [Python Virtual Environment](https://docs.python.org/3/tutorial/venv.html) and install the necessary project dependencies (in this case [pandas](https://pandas.pydata.org/)).
+The script setup.py generates a default input file 'sample_events.json' containing 1000 events.
+This project also includes a test suite, that can be run using
+```shell
+python -m unittest 
 ```
-{"date": "2018-12-26 18:11:00", "average_delivery_time": 0}
-{"date": "2018-12-26 18:12:00", "average_delivery_time": 20}
-{"date": "2018-12-26 18:13:00", "average_delivery_time": 20}
-{"date": "2018-12-26 18:14:00", "average_delivery_time": 20}
-{"date": "2018-12-26 18:15:00", "average_delivery_time": 20}
-{"date": "2018-12-26 18:16:00", "average_delivery_time": 35,5}
-{"date": "2018-12-26 18:17:00", "average_delivery_time": 35,5}
-{"date": "2018-12-26 18:18:00", "average_delivery_time": 35,5}
-{"date": "2018-12-26 18:19:00", "average_delivery_time": 35,5}
-{"date": "2018-12-26 18:20:00", "average_delivery_time": 35,5}
-{"date": "2018-12-26 18:21:00", "average_delivery_time": 35,5}
-{"date": "2018-12-26 18:22:00", "average_delivery_time": 31}
-{"date": "2018-12-26 18:23:00", "average_delivery_time": 31}
-{"date": "2018-12-26 18:24:00", "average_delivery_time": 58}
+### Running
+
+To run a default configuration of the developed unbabel_cli simply run
+
+```shell
+python unbabel_cli.py -f sample_events.json
+```
+This will process the sample_events.json file using a [Simple Moving Average](https://en.wikipedia.org/wiki/Moving_average#Simple_moving_average) and a window of 10 minutes. The results to an output file called 'output.json'
+
+The CLI supports a number of different configuration parameters which are detailed using the -h flag
+```shell
+python unbabel_cli.py -h
+
+usage: unbabel_cli.py [-h] --file FILE [--output_format {stdout,json}]
+                      [--window_size WINDOW_SIZE] [--type {sma}]
+                      [--event_name {translation_delivered,translation_requested}]
+                      [--source_language SOURCE_LANGUAGE]
+                      [--target_language TARGET_LANGUAGE]
+
+Unbabel CLI
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --file FILE, -f FILE  Path to file to process - json and csv files are
+                        supported
+  --output_format {stdout,json}, -o {stdout,json}
+                        Output format (defaults to json)
+  --window_size WINDOW_SIZE, -w WINDOW_SIZE
+                        Window size for moving average in minutes (defaults to
+                        10)
+  --type {sma}, -t {sma}
+                        Moving Average algorithm to use (defaults to 'sma')
+  --event_name {translation_delivered,translation_requested}, -e {translation_delivered,translation_requested}
+                        Which event to process (defaults to
+                        'translation_delivered')
+  --source_language SOURCE_LANGUAGE
+                        Process only translations from given language
+  --target_language TARGET_LANGUAGE
+                        Process only translations to given language
 ```
 
-#### Notes
+## Solution
 
-Before jumping right into implementation we advise you to think about the solution first. We will evaluate, not only if your solution works but also the following aspects:
+The main objetive stated in the problem definition was that to implement a solution that could calculate a moving average delivery time of all events, aggregated by the minute, for a given time frame. 
+From my understanding of Unbabel's challenges, that is, dealing with translation models between different languages where each language has its own challenges and from my understanding of moving averages and its variations, I decided to add the following requirements to the problem:
 
-+ Simple and easy to read code. Remember that [simple is not easy](https://www.infoq.com/presentations/Simple-Made-Easy)
-+ Always keep in mind the SOLID principles
-+ Always test your code and remember that tests are also a form of documentation. [The magic of testing](https://www.youtube.com/watch?v=URSWYvyc42M)
-+ Make your application modular and easy to extend. [Clean Architecture](http://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
-+ Be consistent in your code. 
-
-We want you to solve this challenge in the language you feel most confortable with. Our machines run Python, Ruby, Scala, Java, Clojure, Elixir and Nodejs. If you are thinking of using any other programming language please reach out to us first 🙏.
-
-Also if you have any problem please **open an issue**. 
-
-Good luck and may the force be with you
-
-#### Extra points
-
-If you feeling creative feel free to consider any additional cases you might find interesting. Remember this is a bonus, focus on delivering the solution first.
-
+- The solution should support filtering events according to the source language and target language (or both)
+- The solution should be easily extensible to other moving average variations

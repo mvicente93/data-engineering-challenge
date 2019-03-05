@@ -1,8 +1,8 @@
 from abc import ABC
 from abc import abstractclassmethod
-from unbabel_cli.transformers import SMADataTransformer
+from unbabel_cli.transformers import DataTransformer
 from unbabel_cli.windows import SMAWindow
-
+from unbabel_cli.windows import EMAWindow
 
 class AbstractWindowIterator(ABC):
 
@@ -51,3 +51,27 @@ class SMAWindowIterator(AbstractWindowIterator):
         self._update_window_indexes()
 
         return SMAWindow(window)
+
+
+class EMAWindowIterator(AbstractWindowIterator):
+
+    def _next_window(self):
+        if self.right_index > len(self.data):
+            return
+
+        if self.right_index < self.window_size:
+            window = self.data[:self.right_index]
+        else:
+            window = self.data[self.left_index:self.right_index]
+        
+        if window.empty:
+            return
+
+        if self.right_index is 1:
+            self.window = EMAWindow(window)
+        else:
+            self.window = EMAWindow(window, self.window.mean)
+        
+        self._update_window_indexes()
+
+        return self.window

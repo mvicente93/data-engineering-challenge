@@ -7,7 +7,7 @@ from datetime import datetime
 from datetime import timedelta
 
 
-TIMESTAMP_DAY_RANGE = 7
+TIMESTAMP_MINUTES_RANGE = 30
 # Give more weight to delivered events
 EVENTS = ['translation_delivered'] * 7 + ['translation_requested'] * 3
 LANGUAGES = ['en', 'fr', 'pt', 'it', 'es'] 
@@ -16,7 +16,7 @@ MAX_DURATION = 100
 MAX_NR_WORDS = 500
 
 
-def run(n_events, output_file="sample_events.json"):
+def run(n_events, output_file):
     
     with open(output_file, 'w') as f:
         events = []
@@ -41,7 +41,7 @@ def generate_event():
     return event
 
 def generate_random_timestamp():
-    return (datetime.now() - timedelta(days=random.randrange(TIMESTAMP_DAY_RANGE)) * random.random()).strftime('%Y-%m-%d %H:%M:%S.%f')
+    return (datetime.now() - timedelta(minutes=random.randrange(TIMESTAMP_MINUTES_RANGE)) * random.random()).strftime('%Y-%m-%d %H:%M:%S.%f')
 
 def generate_cli_parser():
     parser = argparse.ArgumentParser(description='Setup Unbabel CLI')
@@ -50,7 +50,8 @@ def generate_cli_parser():
                         type=int,
                         default=1000)
     parser.add_argument('--output_file', '-o',
-                        help="Output file name")
+                        help="Output file name",
+                        default="sample_events.json")
     return parser
     
 if __name__ == "__main__":
