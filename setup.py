@@ -16,11 +16,8 @@ MAX_DURATION = 100
 MAX_NR_WORDS = 500
 
 
-def run(n_events, output_file=None):
+def run(n_events, output_file="sample_events.json"):
     
-    if not output_file:
-        output_file = '%d_events.json' % n_events
-
     with open(output_file, 'w') as f:
         events = []
         for _ in range(n_events):
